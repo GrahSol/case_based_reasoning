@@ -114,13 +114,12 @@ def main():
         print("\nMenyimpan 5 restoran terbaik ke peringkat.xlsx ...")
         df_top_5.to_excel('peringkat.xlsx', index=False)
         
-        print("\n=== DAFTAR 5 RESTORAN TERBAIK ===")
+        print("\n===== DAFTAR 5 RESTORAN TERBAIK =====")
         print(df_top_5.to_string(index=False))
-        print("===================================")
-        print("Proses Selesai. Hasil telah diekstrak!")
+        print("\nProses Selesai dan hasil sudah diekstrak ke xlsx!")
         
     except FileNotFoundError:
-        print("Error: File 'restoran.xlsx' tidak ditemukan! Pastikan nama file sesuai dan berada pada satu folder dengan main.py.")
+        print("File 'restoran.xlsx' tidak ditemukan! Pastikan nama file sesuai dan berada pada satu folder dengan main.py.")
 
 if __name__ == '__main__':
     main()
