@@ -25,9 +25,9 @@ def fuzzification(servis, harga):
         'Bagus': trapesium_naik(servis, 50, 80)   
     }
     f_harga = {
-        'Murah': trapesium_turun(harga, 30000, 40000),
-        'Sedang': segitiga(harga, 30000, 40000, 50000),
-        'Mahal': trapesium_naik(harga, 40000, 50000)
+        'Murah': trapesium_turun(harga, 22000, 30000),
+        'Sedang': segitiga(harga, 28000, 40000, 50000),
+        'Mahal': trapesium_naik(harga, 45000, 55000)
     }
     return f_servis, f_harga
 
@@ -88,7 +88,7 @@ def main():
             
             f_servis, f_harga = fuzzification(servis, harga)
             inf_result = inference(f_servis, f_harga)
-            skor = defuzzification(inf_result)
+            skor = round(defuzzification(inf_result), 5)
             
             results.append({
                 'ID': id_restoran,
@@ -98,7 +98,10 @@ def main():
             })
             
         df_results = pd.DataFrame(results)
-        df_sorted = df_results.sort_values(by='Skor Kelayakan', ascending=False)
+        df_sorted = df_results.sort_values(
+            by=['Skor Kelayakan', 'Kualitas Servis', 'Harga'],
+            ascending=[False, False, True]
+        )
         
         df_top_5 = df_sorted.head(5)
         
