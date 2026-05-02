@@ -50,12 +50,13 @@ def inference(f_servis, f_harga):
     return {'Rendah': rendah, 'Sedang': sedang, 'Tinggi': tinggi}
 
 # Defuzzification
+# 4. Defuzzification
 def defuzzification(inf_result):
     pembilang = 0.0
     penyebut = 0.0
-    z = 0.0
-    
-    while z <= 100.0 + 1e-9:
+    for i in range(0, 1001):
+        z = i / 10.0  
+        
         mu_rendah = min(inf_result['Rendah'], trapesium_turun(z, 30, 50))
         mu_sedang = min(inf_result['Sedang'], segitiga(z, 40, 60, 80))
         mu_tinggi = min(inf_result['Tinggi'], trapesium_naik(z, 70, 90))
@@ -64,9 +65,10 @@ def defuzzification(inf_result):
         
         pembilang += z * mu_z
         penyebut += mu_z
-        z += 0.1
+    if penyebut == 0:
+        return 0.0
         
-    return pembilang / penyebut if penyebut > 1e-12 else 0.0
+    return pembilang / penyebut
 
 # mainss
 def main():
