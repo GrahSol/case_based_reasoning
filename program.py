@@ -50,7 +50,6 @@ def inference(f_servis, f_harga):
     return {'Rendah': rendah, 'Sedang': sedang, 'Tinggi': tinggi}
 
 # Defuzzification
-# 4. Defuzzification
 def defuzzification(inf_result):
     pembilang = 0.0
     penyebut = 0.0
@@ -70,7 +69,7 @@ def defuzzification(inf_result):
         
     return pembilang / penyebut
 
-# mainss
+# main
 def main():
     try:
         print("Membaca file restoran.xlsx ...")
