@@ -1,8 +1,6 @@
 import pandas as pd
 
-
-# 1. Fungsi keanggotaan
-
+# Fungsi keanggotaan
 def trapesium_turun(x, a, b):
     if x <= a: return 1.0
     elif x >= b: return 0.0
@@ -19,13 +17,12 @@ def segitiga(x, a, b, c):
     elif b < x < c: return (c - x) / (c - b)
     return 0.0
 
-
-# 2. Fuzzification
+# Fuzzification
 def fuzzification(servis, harga):
     f_servis = {
         'Buruk': trapesium_turun(servis, 30, 50),
-        'Biasa': segitiga(servis, 30, 50, 80),
-        'Bagus': trapesium_naik(servis, 60, 80)
+        'Biasa': segitiga(servis, 20, 50, 80),    
+        'Bagus': trapesium_naik(servis, 50, 80)   
     }
     f_harga = {
         'Murah': trapesium_turun(harga, 30000, 40000),
@@ -34,34 +31,31 @@ def fuzzification(servis, harga):
     }
     return f_servis, f_harga
 
-
-# 3. Inference
-
+# Inference
 def inference(f_servis, f_harga):
-    r1 = min(f_servis['Buruk'], f_harga['Mahal'])
-    r2 = min(f_servis['Buruk'], f_harga['Sedang'])
-    r3 = min(f_servis['Buruk'], f_harga['Murah'])
-    r4 = min(f_servis['Biasa'], f_harga['Mahal'])
-    r5 = min(f_servis['Biasa'], f_harga['Sedang'])
-    r6 = min(f_servis['Biasa'], f_harga['Murah'])
-    r7 = min(f_servis['Bagus'], f_harga['Mahal'])
-    r8 = min(f_servis['Bagus'], f_harga['Sedang'])
-    r9 = min(f_servis['Bagus'], f_harga['Murah'])
+    r1 = min(f_servis['Buruk'], f_harga['Mahal'])   
+    r2 = min(f_servis['Buruk'], f_harga['Sedang'])  
+    r3 = min(f_servis['Buruk'], f_harga['Murah'])   
+    r4 = min(f_servis['Biasa'], f_harga['Mahal'])   
+    r5 = min(f_servis['Biasa'], f_harga['Sedang'])  
+    r6 = min(f_servis['Biasa'], f_harga['Murah'])   
+    r7 = min(f_servis['Bagus'], f_harga['Mahal'])   
+    r8 = min(f_servis['Bagus'], f_harga['Sedang'])  
+    r9 = min(f_servis['Bagus'], f_harga['Murah'])   
 
-    rendah = max(r1, r2, r4)
-    sedang = max(r3, r5, r7)
+    rendah = max(r1, r2, r3, r4)
+    sedang = max(r5, r7)
     tinggi = max(r6, r8, r9)
 
     return {'Rendah': rendah, 'Sedang': sedang, 'Tinggi': tinggi}
 
-
-# 4. Defuzzification
-
+# Defuzzification
 def defuzzification(inf_result):
-    pembilang = 0
-    penyebut = 0
+    pembilang = 0.0
+    penyebut = 0.0
+    z = 0.0
     
-    for z in range(0, 101, 5):
+    while z <= 100.0 + 1e-9:
         mu_rendah = min(inf_result['Rendah'], trapesium_turun(z, 30, 50))
         mu_sedang = min(inf_result['Sedang'], segitiga(z, 40, 60, 80))
         mu_tinggi = min(inf_result['Tinggi'], trapesium_naik(z, 70, 90))
@@ -70,15 +64,11 @@ def defuzzification(inf_result):
         
         pembilang += z * mu_z
         penyebut += mu_z
+        z += 0.1
         
-    if penyebut == 0:
-        return 0
-    
-    return pembilang / penyebut
+    return pembilang / penyebut if penyebut > 1e-12 else 0.0
 
-
-# 5. main
-
+# mainss
 def main():
     try:
         print("Membaca file restoran.xlsx ...")
@@ -119,7 +109,7 @@ def main():
         print("\nProses Selesai dan hasil sudah diekstrak ke xlsx!")
         
     except FileNotFoundError:
-        print("File 'restoran.xlsx' tidak ditemukan! Pastikan nama file sesuai dan berada pada satu folder dengan main.py.")
+        print("File 'restoran.xlsx' tidak ditemukan! Pastikan nama file sesuai dan berada pada satu folder dengan program ini.")
 
 if __name__ == '__main__':
     main()
