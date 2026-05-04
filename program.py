@@ -20,12 +20,12 @@ def segitiga(x, a, b, c):
 # Fuzzification
 def fuzzification(servis, harga):
     f_servis = {
-        'Buruk': trapesium_turun(servis, 30, 50),
+        'Buruk': trapesium_turun(servis, 0, 40),
         'Biasa': segitiga(servis, 20, 50, 80),    
-        'Bagus': trapesium_naik(servis, 50, 80)   
+        'Bagus': trapesium_naik(servis, 60, 100)   
     }
     f_harga = {
-        'Murah': trapesium_turun(harga, 22000, 30000),
+        'Murah': trapesium_turun(harga, 20000, 30000),
         'Sedang': segitiga(harga, 28000, 40000, 50000),
         'Mahal': trapesium_naik(harga, 45000, 55000)
     }
@@ -72,7 +72,7 @@ def defuzzification(inf_result):
 # main
 def main():
     try:
-        print("Membaca file restoran.xlsx ...")
+        print("Membaca file restoran.xlsx")
         df = pd.read_excel('restoran.xlsx')
         
         id_col = df.columns[0]
@@ -82,9 +82,12 @@ def main():
         results = []
         
         for index, row in df.iterrows():
-            id_restoran = row[id_col]
-            servis = row[servis_col]
-            harga = row[harga_col]
+            try:
+                id_restoran = row[id_col]
+                servis = float(row[servis_col])
+                harga = float(row[harga_col])
+            except (ValueError, TypeError):
+                continue 
             
             f_servis, f_harga = fuzzification(servis, harga)
             inf_result = inference(f_servis, f_harga)
@@ -105,7 +108,7 @@ def main():
         
         df_top_5 = df_sorted.head(5)
         
-        print("\nMenyimpan 5 restoran terbaik ke peringkat.xlsx ...")
+        print("\nMenyimpan 5 restoran terbaik ke peringkat.xlsx")
         df_top_5.to_excel('peringkat.xlsx', index=False)
         
         print("\n===== DAFTAR 5 RESTORAN TERBAIK =====")
